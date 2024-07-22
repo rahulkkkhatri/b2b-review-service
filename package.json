@@ -1,0 +1,31 @@
+{
+  "name": "review-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=prod node src/index.js",
+    "dev": "NODE_ENV=dev node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/zalon1/review-service.git"
+  },
+  "author": " (Shruti Jain)",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.3.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/qless2/review-service/issues"
+  },
+  "homepage": "https://gitlab.com/qless2/review-service#readme"
+}

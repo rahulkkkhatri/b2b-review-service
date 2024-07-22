@@ -1,0 +1,20 @@
+FROM node:16-slim as prod
+
+WORKDIR /app
+
+ENV MONGODB_URI mongodb://stagingUser:stagingUser123!4_lp1c_0999@172.17.0.1:27017/zalon-staging-db
+ENV PORT 7009
+ENV CONTEXT_PATH /zalon/review-service/api
+
+COPY package.json . 
+
+RUN npm install --omit=dev
+
+RUN npm install pm2 -g
+
+COPY . .
+
+
+EXPOSE 7009
+
+CMD ["pm2-runtime", "src/index.js"]
