@@ -1,0 +1,55 @@
+name: Install Tools
+
+description: Install all tools
+
+inputs:
+  aws_version:
+    description: 'The version of AWS CLI to install'
+    default: 'latest'
+    required: false
+  docker_version:
+    description: 'The version of Docker to install'
+    default: 'latest'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install AWS CLI
+      shell: bash
+      run: |
+        if [[ "${{ inputs.aws_version }}" == "latest" ]]; then
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        else
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${{ inputs.aws_version }}.zip" -o "awscliv2.zip"
+        fi
+        unzip awscliv2.zip
+        sudo ./aws/install
+
+    - name: Verify AWS CLI installation
+      run: aws --version
+
+    - name: Install Docker
+      shell: bash
+      run: |
+        if [[ "${{ inputs.docker_version }}" == "latest" ]]; then
+          sudo apt-get update
+          sudo apt-get install -y \
+            ca-certificates \
+            curl \
+            gnupg \
+            lsb-release
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo \
+            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        else
+          sudo apt-get update
+          sudo apt-get install -y docker-ce=${{ inputs.docker_version }} docker-ce-cli=${{ inputs.docker_version }} containerd.io docker-compose-plugin
+        fi
+
+    - name: Verify Docker installation
+      run: docker --version
