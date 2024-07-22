@@ -24,7 +24,7 @@ runs:
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${{ inputs.aws_version }}.zip" -o "awscliv2.zip"
         fi
         unzip awscliv2.zip
-        sudo ./aws/install
+        sudo ./aws/install --update
 
     - name: Verify AWS CLI installation
       shell: bash
