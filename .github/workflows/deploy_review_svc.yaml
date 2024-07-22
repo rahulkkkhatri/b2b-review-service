@@ -30,3 +30,12 @@ jobs:
       - name: Verify AWS CLI configuration
         run: aws sts get-caller-identity
       
+      - name: Docker Build Push
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          docker build -t ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:devops . -f Dockerfile.prod
+          docker push 869547439523.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:devops
+          
+
+      
+      
