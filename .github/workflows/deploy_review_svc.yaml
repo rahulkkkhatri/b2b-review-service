@@ -44,17 +44,19 @@ jobs:
         id: fetch-comments
         run: |
           GITHUB_API_URL="https://api.github.com"
+          echo "1"
           RUN_ID=${{ github.run_id }}
+          echo "2"
           COMMENTS_URL=$(curl -s -H "Authorization: token ${{ secrets.GH_PAT }}" \
             "$GITHUB_API_URL/repos/${{ github.repository }}/actions/runs/$RUN_ID" | jq -r '.logs_url')
-          
+          echo "COMMENT_URL : ${COMMENTS_UR}"
           # Extract the issue number from the logs URL
           ISSUE_NUMBER=$(echo $COMMENTS_URL | grep -oE '[0-9]+$')
-          
+          echo "ISSUE_NUMBER : ${ISSUE_NUMBER}"
           # Fetch comments
           COMMENTS=$(curl -s -H "Authorization: token ${{ secrets.GH_PAT }}" \
             "$GITHUB_API_URL/repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments" | jq -r '.[].body')
-
+          echo "COMMENTS : ${COMMENTS}"
           echo "Approval comments: $COMMENTS"
           echo "::set-output name=comments::$COMMENTS"
 
