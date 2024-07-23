@@ -138,7 +138,7 @@ jobs:
         run: |
           # aws ecr batch-delete-image --repository-name ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository \
           #   --image-ids imageTag="rollback-${GITHUB_SHA::7}" imageTag="${GITHUB_SHA::7}"
-          aws ecr batch-delete-image --repository-name ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository \
+          aws ecr batch-delete-image --repository-name prod-zalon-review-service-repository \
             --image-ids imageTag="910317c" imageTag="bf2819e"
 
       
