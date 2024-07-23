@@ -47,6 +47,7 @@ jobs:
           echo "1"
           RUN_ID=${{ github.run_id }}
           echo "2"
+          curl -s -H "Authorization: token ${{ secrets.GH_PAT }}" "$GITHUB_API_URL/repos/${{ github.repository }}/actions/runs/$RUN_ID"
           COMMENTS_URL=$(curl -s -H "Authorization: token ${{ secrets.GH_PAT }}" \
             "$GITHUB_API_URL/repos/${{ github.repository }}/actions/runs/$RUN_ID" | jq -r '.logs_url')
           echo "COMMENT_URL : ${COMMENTS_UR}"
