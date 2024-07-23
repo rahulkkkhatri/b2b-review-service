@@ -37,8 +37,8 @@ jobs:
           docker push ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:${GITHUB_SHA::7}
           echo "pushed docker image : ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:${GITHUB_SHA::7}"
           echo "Preparing for rollback"
-          docker pull ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:latest
-          docker tag ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:latest ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:rollback-${GITHUB_SHA::7}
+          docker pull ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:devops
+          docker tag ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:devops ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:rollback-${GITHUB_SHA::7}
           docker push ${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/prod-zalon-review-service-repository:rollback-${GITHUB_SHA::7}
 
   deploy:
