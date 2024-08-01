@@ -41,11 +41,9 @@ jobs:
 
               # Create the .github directory and CODEOWNERS file
               mkdir -p .github
-              echo -e "# Add your CODEOWNERS content here\n* @$GH_OWNER" > .github/CODEOWNERS
-
-              # Commit and push changes
-              git config --global user.name "github-actions[bot]"
-              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              #echo -e "# Add your CODEOWNERS content here\n* @$GH_OWNER" > .github/CODEOWNERS
+              cp ../setup-pr-approvals/CODEOWNERS .github/CODEOWNERS
+              
               git add .github/CODEOWNERS
               git commit -m "Add CODEOWNERS file"
               git push origin main
