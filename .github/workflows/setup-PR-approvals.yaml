@@ -19,39 +19,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Git
-        run: sudo apt-get install git
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
-      - name: Get Repositories
-        id: get_repos
-        run: |
-          repos=$(curl -H "Authorization: token $GH_TOKEN" "https://api.github.com/users/$GH_OWNER/repos" | jq -r '.[].name')
-          echo "::set-output name=repos::$repos"
       - name: Set up Git configuration
         run: |
           git config --global user.name "rahulkkkhatri"
           git config --global user.email "rahul.khatri10101@gmail.com"
 
-      - name: Clone and Update Repositories
+      - name: Update CODEOWNERS in Repositories
         run: |
-          for repo in ${{ steps.get_repos.outputs.repos }}; do
+          # Fetch the list of repositories
+          repos=$(curl -H "Authorization: token $GH_TOKEN" "https://api.github.com/users/$GH_OWNER/repos" | jq -r '.[].name')
+
+          # Loop through each repository
+          for repo in $repos; do
             if [ "$repo" != "$EXCLUDED_REPO" ]; then
+              # Clone the repository
               git clone https://$GH_OWNER:$GH_TOKEN@github.com/$GH_OWNER/$repo.git
               cd $repo
+
+              # Create the .github directory and CODEOWNERS file
               mkdir -p .github
-              #echo -e "# Add your CODEOWNERS content here\n* @your_github_username" > .github/CODEOWNERS
-              cp ../setup-pr-approvals/CODEOWNERS .github/CODEOWNERS
+              echo -e "# Add your CODEOWNERS content here\n* @$GH_OWNER" > .github/CODEOWNERS
+
+              # Commit and push changes
+              git config --global user.name "github-actions[bot]"
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
               git add .github/CODEOWNERS
               git commit -m "Add CODEOWNERS file"
               git push origin main
-              cd ..
-            fi
-          done
 
-      - name: Clean up
-        run: |
-          for repo in ${{ steps.get_repos.outputs.repos }}; do
-            if [ "$repo" != "$EXCLUDED_REPO" ]; then
+              # Return to the root directory and clean up
+              cd ..
               rm -rf $repo
             fi
           done
+      
+
+      
