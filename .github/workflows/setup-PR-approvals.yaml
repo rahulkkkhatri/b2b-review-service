@@ -45,8 +45,8 @@ jobs:
               cp ../setup-pr-approvals/CODEOWNERS .github/CODEOWNERS
               
               git add .github/CODEOWNERS
-              git commit -m "Add CODEOWNERS file"
-              git push origin main
+              git commit -m "Add CODEOWNERS file" || true
+              git push origin main || true
 
               # Return to the root directory and clean up
               cd ..
