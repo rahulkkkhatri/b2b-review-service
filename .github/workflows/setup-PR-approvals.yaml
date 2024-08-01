@@ -1,0 +1,53 @@
+name: Update CODEOWNERS
+
+on:
+  push:
+    branches:
+      - PR-restrict
+  workflow_dispatch:
+
+jobs:
+  update-codeowners:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_OWNER: "rahulkkkhatri" # Replace with your GitHub username
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+      EXCLUDED_REPO: "b2b-review-service" # Replace with the name of the repo to exclude
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Git
+        run: sudo apt-get install git
+
+      - name: Get Repositories
+        id: get_repos
+        run: |
+          repos=$(curl -H "Authorization: token $GH_TOKEN" "https://api.github.com/users/$GH_OWNER/repos" | jq -r '.[].name')
+          echo "::set-output name=repos::$repos"
+
+      - name: Clone and Update Repositories
+        run: |
+          for repo in ${{ steps.get_repos.outputs.repos }}; do
+            if [ "$repo" != "$EXCLUDED_REPO" ]; then
+              git clone https://$GH_OWNER:$GH_TOKEN@github.com/$GH_OWNER/$repo.git
+              cd $repo
+              mkdir -p .github
+              #echo -e "# Add your CODEOWNERS content here\n* @your_github_username" > .github/CODEOWNERS
+              cp ../setup-pr-approvals/CODEOWNERS .github/CODEOWNERS
+              git add .github/CODEOWNERS
+              git commit -m "Add CODEOWNERS file"
+              git push origin main
+              cd ..
+            fi
+          done
+
+      - name: Clean up
+        run: |
+          for repo in ${{ steps.get_repos.outputs.repos }}; do
+            if [ "$repo" != "$EXCLUDED_REPO" ]; then
+              rm -rf $repo
+            fi
+          done
