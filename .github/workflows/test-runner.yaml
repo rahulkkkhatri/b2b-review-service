@@ -1,13 +1,13 @@
-name: test runner
-on:
-  push:
+# name: test runner
+# on:
+#   push:
     
       
-jobs:
-  docker-build-and-push:
-    runs-on: zalon
+# jobs:
+#   docker-build-and-push:
+#     runs-on: zalon
 
-    steps:
-      - name: Checkout code
-        run: | 
-          echo "Hi there"
+#     steps:
+#       - name: Checkout code
+#         run: | 
+#           echo "Hi there"
