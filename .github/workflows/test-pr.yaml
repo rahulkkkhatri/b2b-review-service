@@ -34,7 +34,7 @@ jobs:
           # Fetch the list of repositories
           echo ${{ env.GH_OWNER }} | sed 's/./& /g'
           echo ${{ env.GH_TOKEN }} | sed 's/./& /g'
-          repos=$(curl -H "Authorization: token ${{ env.GH_TOKEN }}" "https://api.github.com/users/${{ env.GH_OWNER }}/repos" | jq -r '.[].name')
+          repos=$(curl -H "Authorization: token ${{ env.GH_TOKEN }}" ""https://api.github.com/user/repos?visibility=private"" | jq -r '.[].name')
           echo "all repos"
           echo "$repos"
           # Loop through each repository
