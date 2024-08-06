@@ -1,0 +1,60 @@
+name: Update CODEOWNERS
+
+on:
+  push:
+    branches:
+      - main
+    
+  workflow_dispatch:
+
+jobs:
+  update-codeowners:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_OWNER: "rahulkkkhatri" # Replace with your GitHub username
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+      EXCLUDED_REPO: "zinfra" # Replace with the name of the repo to exclude
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name "rahulkkkhatri"
+          git config --global user.email "rahul.khatri10101@gmail.cim"
+          echo "PAT - ${{ secrets.GH_PAT }}"
+
+      - name: Update CODEOWNERS in Repositories
+        run: |
+          # Fetch the list of repositories
+          echo ${{ env.GH_OWNER }} | sed 's/./& /g'
+          echo ${{ env.GH_TOKEN }} | sed 's/./& /g'
+          repos=$(curl -H "Authorization: token ${{ env.GH_TOKEN }}" "https://api.github.com/users/${{ env.GH_OWNER }}/repos" | jq -r '.[].name')
+          echo "all repos"
+          echo "$repos"
+          # Loop through each repository
+          for repo in $repos; do
+            if [ "$repo" != "$EXCLUDED_REPO" ]; then
+              # Clone the repository
+              git clone https://$GH_OWNER:$GH_TOKEN@github.com/$GH_OWNER/$repo.git
+              cd $repo
+
+              # Create the .github directory and CODEOWNERS file
+              mkdir -p .github
+              #echo -e "# Add your CODEOWNERS content here\n* @$GH_OWNER" > .github/CODEOWNERS
+              cp ../setup-pr-approvals/CODEOWNERS .github/CODEOWNERS
+              
+              git add .github/CODEOWNERS
+              git commit -m "Add CODEOWNERS file" || true
+              git push origin main || true
+
+              # Return to the root directory and clean up
+              cd ..
+              rm -rf $repo
+            fi
+          done
